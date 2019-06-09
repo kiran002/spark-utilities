@@ -177,7 +177,8 @@ object SchemaConverters {
         st.foreach { f =>
           val fieldAvroType =
             toAvroType(f.dataType, f.nullable, f.name, childNameSpace)
-          fieldsAssembler.name(f.name).`type`(fieldAvroType).noDefault()
+          if(f.nullable) fieldsAssembler.name(f.name).`type`(fieldAvroType).withDefault(null)
+          else fieldsAssembler.name(f.name).`type`(fieldAvroType).noDefault()
         }
         fieldsAssembler.endRecord()
 
