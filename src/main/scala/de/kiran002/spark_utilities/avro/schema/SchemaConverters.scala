@@ -185,7 +185,7 @@ object SchemaConverters {
       case other => throw new IncompatibleSchemaException(s"Unexpected type $other.")
     }
     if (nullable && catalystType != NullType) {
-      Schema.createUnion(schema, nullSchema)
+      Schema.createUnion(nullSchema, schema)
     } else {
       schema
     }
