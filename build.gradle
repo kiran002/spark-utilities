@@ -1,0 +1,17 @@
+
+apply plugin: 'scala'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.scala-lang:scala-library:2.12.4'
+
+    compile group: 'org.apache.spark', name: 'spark-sql_2.12', version: '2.4.3'
+    compile group: 'org.apache.spark', name: 'spark-core_2.12', version: '2.4.3'
+
+    // Your other deps here
+}
+
