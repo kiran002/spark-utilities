@@ -13,6 +13,7 @@ dependencies {
     compile group: 'org.apache.spark', name: 'spark-avro_2.12', version: '2.4.3'
     compile group: 'org.apache.spark', name: 'spark-core_2.12', version: '2.4.3'
 
+    compile group: 'com.prowidesoftware', name: 'pw-swift-core', version: 'SRU2018-7.10.4'
     // Your other deps here
 }
 
