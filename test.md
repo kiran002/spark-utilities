@@ -1,4 +1,4 @@
-
+```Scala
 def matchSchema(df: DataFrame, structCol: String, customSchema: StructType): DataFrame = {
   // Select the columns from the struct column in the order specified by customSchema
   val colsToKeep = customSchema.fieldNames.map(c => col(s"$structCol.$c").alias(c))
@@ -16,3 +16,4 @@ def matchSchema(df: DataFrame, structCol: String, customSchema: StructType): Dat
   val finalStructCol = struct((colsToKeep ++ colsToAdd): _*).alias(structCol)
   df2.withColumn(structCol, finalStructCol)
 }
+```
