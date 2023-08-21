@@ -1,6 +1,6 @@
 ```Scala
 import org.apache.spark.sql.functions.{col, struct}
-import org.apache.spark.sql.types.{StructType, StructField}
+import org.apache.spark.sql.types.{StructType, StructField, ArrayType}
 
 def matchSchema(df: DataFrame, structCol: String, customSchema: StructType): DataFrame = {
   def matchStructType(df: DataFrame, structCol: String, customSchema: StructType): DataFrame = {
@@ -9,6 +9,7 @@ def matchSchema(df: DataFrame, structCol: String, customSchema: StructType): Dat
       val colName = s"$structCol.${f.name}"
       f.dataType match {
         case st: StructType => struct(matchStructType(df.select(colName), colName, st).columns.map(col): _*).alias(f.name)
+        case ArrayType(st: StructType, _) => col(colName).alias(f.name)
         case _ => col(colName).alias(f.name)
       }
     }
@@ -32,26 +33,27 @@ def matchSchema(df: DataFrame, structCol: String, customSchema: StructType): Dat
 }
 
 // Example usage
-val data = Seq((1, (("a", ("x", "y")), 1)), (2, (("b", ("x", "y")), 2)), (3, (("c", ("x", "y")), 3)))
+val data = Seq((1, (("a", Array(("x", "y"))), 1)), (2, (("b", Array(("x", "y"))), 2)), (3, (("c", Array(("x", "y"))), 3)))
 val df = spark.createDataFrame(data).toDF("id", "nested")
 df.show()
-// +---+------------+
-// | id|      nested|
-// +---+------------+
-// |  1|[[a,[x,y]],1]|
-// |  2|[[b,[x,y]],2]|
-// |  3|[[c,[x,y]],3]|
-// +---+------------+
+// +---+----------------+
+// | id|          nested|
+// +---+----------------+
+// |  1|[[a,[[x,y]]],1]|
+// |  2|[[b,[[x,y]]],2]|
+// |  3|[[c,[[x,y]]],3]|
+// +---+----------------+
 
-val customSchema = StructType(Seq(StructField("a", StructType.fromDDL("b string")), StructField("b", StructType.fromDDL("c string"))))
+val customSchema = StructType(Seq(StructField("a", StructType.fromDDL("b array<struct<c:string>>")), StructField("b", StructType.fromDDL("c string"))))
 val df2 = matchSchema(df, "nested", customSchema)
 df2.show()
-// +---+--------+
-// | id| nested |
-// +---+--------+
-// | 1 |[[a],null]|
-// | 2 |[[b],null]|
-// | 3 |[[c],null]|
-// +---+--------+
+// +---+------------+
+// | id|     nested |
+// +---+------------+
+// | 1 |[[[null]],null]|
+// | 2 |[[[null]],null]|
+// | 3 |[[[null]],null]|
+// +---+------------+
+
 
 ```
