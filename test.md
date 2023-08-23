@@ -57,3 +57,11 @@ df2.show()
 
 
 ```
+
+
+```
+script:
+files=("$baseLocation/$currentDate/$projectLocation/$filePattern")
+    if [ ${#files[@]} -gt 0 ]; then
+
+```
