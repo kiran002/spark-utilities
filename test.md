@@ -65,3 +65,20 @@ files=("$baseLocation/$currentDate/$projectLocation/$filePattern")
     if [ ${#files[@]} -gt 0 ]; then
 
 ```
+
+
+```
+import scala.xml._
+
+object Main extends App {
+  val xml = "<Tag attribute=\"value\">Content<InnerTag>More Content</InnerTag></Tag>"
+  val parsedXml = XML.loadString(xml)
+  val transformedXml = new RuleTransformer(new RewriteRule {
+    override def transform(node: Node): Seq[Node] = node match {
+      case e: Elem => e.copy(label = e.label.toLowerCase, attributes = e.attributes.map(a => a.copy(key = a.key.toLowerCase)))
+      case other => other
+    }
+  }).transform(parsedXml)
+  println(transformedXml)
+}
+```
