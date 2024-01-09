@@ -82,3 +82,59 @@ object Main extends App {
   println(transformedXml)
 }
 ```
+
+```python
+
+from typing import Any
+from pyhocon import ConfigFactory
+
+class MyClass:
+    def __init__(self, attr1: str = None, attr2: str = None):
+        self.attr1 = attr1
+        self.attr2 = attr2
+
+class MyNestedClass:
+    def __init__(self, nested_attr: MyClass = None):
+        self.nested_attr = nested_attr
+
+def create_instance_from_config(config_str: str, cls: Any):
+    # Parse the HOCON configuration
+    config = ConfigFactory.parse_string(config_str)
+
+    # Get the attribute names and types of the class
+    attrs = [(attr, typ) for attr, typ in cls.__annotations__.items() if not attr.startswith("__")]
+
+    # Create a dictionary to hold the attribute values
+    attr_values = {}
+
+    # For each attribute, get the value from the config and convert it to the correct type
+    for attr, typ in attrs:
+        value = config.get(attr)
+        if value is not None:
+            # Check if the attribute type is a class (for handling nested types)
+            if hasattr(typ, '__annotations__'):
+                # If the attribute type is a class, create an instance of that class
+                attr_values[attr] = create_instance_from_config(value, typ)
+            else:
+                attr_values[attr] = typ(value)
+
+    # Create an instance of the class with the attribute values
+    instance = cls(**attr_values)
+
+    return instance
+
+# Define a HOCON configuration string
+config_str = """
+nested_attr {
+    attr1 = "Hello"
+    attr2 = "World"
+}
+"""
+
+# Use the function to create an instance of MyNestedClass
+instance = create_instance_from_config(config_str, MyNestedClass)
+
+# Print the attribute values of the instance
+print(f"nested_attr.attr1: {instance.nested_attr.attr1}, nested_attr.attr2: {instance.nested_attr.attr2}")
+
+```
