@@ -97,6 +97,9 @@ class MyNestedClass:
     def __init__(self, nested_attr: MyClass = None):
         self.nested_attr = nested_attr
 
+from typing import Any, List, Dict
+from pyhocon import ConfigFactory
+
 def create_instance_from_config(config_str: str, cls: Any):
     # Parse the HOCON configuration
     config = ConfigFactory.parse_string(config_str)
@@ -115,6 +118,12 @@ def create_instance_from_config(config_str: str, cls: Any):
             if hasattr(typ, '__annotations__'):
                 # If the attribute type is a class, create an instance of that class
                 attr_values[attr] = create_instance_from_config(value, typ)
+            elif getattr(typ, '__origin__', None) is list:
+                # If the attribute type is a list, create a list of instances
+                attr_values[attr] = [create_instance_from_config(v, typ.__args__[0]) for v in value]
+            elif getattr(typ, '__origin__', None) is dict:
+                # If the attribute type is a dict, create a dict of instances
+                attr_values[attr] = {k: create_instance_from_config(v, typ.__args__[1]) for k, v in value.items()}
             else:
                 attr_values[attr] = typ(value)
 
@@ -122,6 +131,7 @@ def create_instance_from_config(config_str: str, cls: Any):
     instance = cls(**attr_values)
 
     return instance
+
 
 # Define a HOCON configuration string
 config_str = """
