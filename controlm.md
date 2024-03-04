@@ -1,6 +1,5 @@
 
-
-http://app.online.bmc.com/e/er?s=1251203807&lid=8395&elqTrackId=d02e94e34f0444e8bb0300d3c00bf4f7&elq=23ec2ce5d4c04c5094b5beeec6eeb2cc&elqaid=11635&elqat=1
+https://www.doc-developpement-durable.org/file/Projets-informatiques/cours-&-manuels-informatiques/control-m/CONTROL-M%20User%20Guide.pdf
 
 
 Task 1: Job Scheduling
