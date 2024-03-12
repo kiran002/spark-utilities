@@ -1,3 +1,5 @@
+https://scastie.scala-lang.org/aIBBhJq8Txy8FPeOL5mzLw
+
 ```Scala
 import org.apache.spark.sql.functions.{col, struct}
 import org.apache.spark.sql.types.{StructType, StructField, ArrayType}
