@@ -1,3 +1,4 @@
+```scala
 val url = "http://localhost:9092" // Replace with your actual GraphQL API URL
     val query = """{
       getInstallment(amount: "400", bin: "400000", userName: "guille") {
@@ -23,7 +24,7 @@ val url = "http://localhost:9092" // Replace with your actual GraphQL API URL
       println(s"Error: ${response.code()} - ${response.message()}")
     }
   }
-
+```
 
 https://scastie.scala-lang.org/aIBBhJq8Txy8FPeOL5mzLw
 
