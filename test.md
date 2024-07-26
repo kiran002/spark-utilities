@@ -1,3 +1,30 @@
+val url = "http://localhost:9092" // Replace with your actual GraphQL API URL
+    val query = """{
+      getInstallment(amount: "400", bin: "400000", userName: "guille") {
+        cardBrand
+      }
+    }"""
+
+    val mediaType = MediaType.parse("application/json")
+    val requestBody = RequestBody.create(mediaType, s"""{"query": "$query"}""")
+
+    val request = new Request.Builder()
+      .url(url)
+      .post(requestBody)
+      .build()
+
+    val client = new OkHttpClient()
+    val response = client.newCall(request).execute()
+
+    if (response.isSuccessful) {
+      val responseBody = response.body().string()
+      println(s"Response: $responseBody")
+    } else {
+      println(s"Error: ${response.code()} - ${response.message()}")
+    }
+  }
+
+
 https://scastie.scala-lang.org/aIBBhJq8Txy8FPeOL5mzLw
 
 ```Scala
